@@ -5,73 +5,46 @@ import {EventAggregator} from 'aurelia-event-aggregator';
 
 export class Home {
 
-
-
-
-  Precious.plugins.getStorageEntry(callback, key, userInfo)
-  Precious.plugins.setStorageEntry(callback, key, value, userInfo)
-  Precious.plugins.removeStorageEntry(callback, key, userInfo)
-
-
-
-
-
-
-
-
-
+  // Precious.plugins.getStorageEntry(callback, key, userInfo)
+  // Precious.plugins.setStorageEntry(callback, key, value, userInfo)
+  // Precious.plugins.removeStorageEntry(callback, key, userInfo)
 
   // EventAggregator Object
-  ea;
+  ea:EventAggregator;
 
   // Event Subscriber Object
   subscriber;
 
-  // Location History
-  location_history = [];
+  // GPS-API-Request-ID
+  gpsRequestId;
 
-  // Activity Boolean
-  active = false;
+  // Location History Array
+  // {
+  //  "lat": float ,
+  //  "long": float,
+  //  "active": bool,
+  //  "timestamp": int
+  // }
+  locationHistory = [];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  //////////////////////
+  ///   AB HIER OK   ///
+  //////////////////////
 
   constructor(eventAggregator) {
     this.ea = eventAggregator;
   }
 
-  subscribe() {
+  // enable Notifications
+  enable() {
 
+    // enable GPS-Updates
+    this.gpsRequestId = Precious.plugins.getContinuousGPS(this.movementDetector);
+
+    // subscribe to activityChannel
     this.subscriber = this.ea.subscribe('activityChannel', active => {
 
-      if (this.active = active) {
+      if (active) {
 
         this.Timer.stop();
         this.Timer.reset();
@@ -86,13 +59,18 @@ export class Home {
 
   }
 
-  dispose() {
+  // disable Notifications
+  disable() {
 
+    // disable GPS-Updates
+    Precious.removeRequest(this.gpsRequestId);
+
+    // unsubscribe from activityChannel
     this.subscriber.dispose();
 
   }
 
-  // Sphärische Distanz in Meter zwischen zwei Koordinaten
+  // spherical distance between two coordinates in meters
   static sphericalDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;    // Math.PI / 180
     var c = Math.cos;
@@ -151,24 +129,28 @@ export class Home {
   movementDetector = function (e, r)
   {
     // Distanz zur letzten Location berechnen
-    var distance = this.sphericalDistance(this.location_history[0][0], this.location_history[0][1], r.latitude, r.longitude);
+    var distance = this.sphericalDistance(this.locationHistory[0]["lat"], this.locationHistory[0]["lon"], r.latitude, r.longitude);
 
     // Neue Position in Location History eintragen und ältesten Wert entfernen
-    this.location_history.unshift([r.latitude, r.longitude]);
-    this.location_history.length = 10;
+    var locationObject = {
+      "lat":r.latitude,
+      "lon":r.longitude,
+      "active": (distance >= 3 ? true : false),
+      "timestamp":Date.now()
+    };
+    this.locationHistory.unshift([locationObject]);
+    this.locationHistory.length = 10;
 
     // bei Statusänderung Event auslösen
-    if ( !this.active && distance >= 3 ) { // IDLE --> ACTIVE
+    if ( !this.locationHistory[1]["active"] && this.locationHistory[0]["active"] ) { // IDLE --> ACTIVE
 
       this.ea.publish("activityChannel", true);
 
-    } else if ( this.active && distance < 3 ) { // ACTIVE --> IDLE
+    } else if ( this.locationHistory[1]["active"] && !this.locationHistory[0]["active"] ) { // ACTIVE --> IDLE
 
       this.ea.publish("activityChannel", false);
 
     }
-  }
+  };
 
-  // GPS-Updates aktivieren
-  Precious.plugins.getContinuousGPS(movementDetector);
 }
