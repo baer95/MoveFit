@@ -1,15 +1,58 @@
 <template>
-  <h1>User Settings</h1>
-
   <form>
+
+    <h4>User Settings</h4>
     <div class="form-group">
-      <label for="inputUserName">Email address</label>
-      <input type="text" class="form-control" id="inputUserName" placeholder="Your Name">
+      <label for="inputUserName">Name</label>
+      <input type="text" class="form-control" id="inputUserName" placeholder="Your Name" value.bind="username">
+    </div>
+    <!--<div class="form-group">
+      <label for="inputProfession">Profession</label>
+      <input type="text" class="form-control" id="inputProfession" placeholder="Profession" value.bind="profession">
+    </div>-->
+    <div class="form-group">
+      <label for="selectProfession">Select Profession</label>
+      <select class="form-control" id="selectProfession" value.bind="profession">
+          <option repeat.for="profession of professions">${profession.name}</option>
+      </select>
+    </div>
+
+    <p><br></p>
+
+    <h4>Worktime</h4>
+    <div class="form-group">
+      <label for="selectProfession">Define Worktime</label>
+      <div class="row">
+        <div class="col-xs-6">
+          <input type="text" class="form-control" placeholder="From" value.bind="workhours[0]">
+        </div>
+        <div class="col-xs-6">
+          <input type="text" class="form-control" placeholder="To" value.bind="workhours[1]">
+        </div>
+      </div>
     </div>
     <div class="form-group">
-      <label for="exampleInputPassword1">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+      <label for="selectProfession">Define Custom Timeout</label>
+
+      <div class="row">
+        <div class="col-xs-6">
+          <input type="text" class="form-control" placeholder="Custom Timeout" value.bind="customTimeout">
+        </div>
+        <div class="col-xs-6">
+          <span class="help-block">min</span>
+        </div>
+      </div>
+
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+    <button type="submit" class="btn btn-primary btn-block" click.trigger="saveData()">Save data</button>
   </form>
+
+  <p>
+    <br>
+  </p>
+
+  <div class="alert alert-success alert-dismissible" role="alert" if.bind="isSuccess">
+    <button type="button" class="close" aria-label="Close" click.trigger="resetSuccess()"><span aria-hidden="true">&times;</span></button>
+    <strong>Success!</strong> Data saved
+  </div>
 </template>
