@@ -1,10 +1,17 @@
-import {Router, RouterConfiguration} from "aurelia-router";
 
+import {Router, RouterConfiguration} from "aurelia-router";
+import {inject} from "aurelia-framework";
+import {UserDataService} from "services/UserDataService";
+
+
+@inject(UserDataService)
 export class App {
   message = "MoveFit";
   router: Router;
 
-  constructor(){
+
+  constructor(userDataService){
+
     // this.timeoutLog();
   }
 
@@ -23,5 +30,6 @@ export class App {
 
     this.router = router;
   }
+
 
 }
