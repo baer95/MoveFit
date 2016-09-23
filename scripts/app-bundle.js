@@ -2,8 +2,16 @@ define('app',["require", "exports"], function (require, exports) {
     "use strict";
     var App = (function () {
         function App() {
-            this.message = 'MoveFit';
+            this.message = "MoveFit";
         }
+        App.prototype.configureRouter = function (config, router) {
+            config.title = 'MoveFit';
+            config.map([
+                { route: '', name: 'home', moduleId: 'home' },
+                { route: 'user', name: 'user', moduleId: 'user' }
+            ]);
+            this.router = router;
+        };
         return App;
     }());
     exports.App = App;
@@ -16,6 +24,16 @@ define('environment',["require", "exports"], function (require, exports) {
         debug: true,
         testing: true
     };
+});
+
+define('home',["require", "exports"], function (require, exports) {
+    "use strict";
+    var Home = (function () {
+        function Home() {
+        }
+        return Home;
+    }());
+    exports.Home = Home;
 });
 
 define('main',["require", "exports", './environment'], function (require, exports, environment_1) {
@@ -38,6 +56,16 @@ define('main',["require", "exports", './environment'], function (require, export
         aurelia.start().then(function () { return aurelia.setRoot(); });
     }
     exports.configure = configure;
+});
+
+define('user',["require", "exports"], function (require, exports) {
+    "use strict";
+    var User = (function () {
+        function User() {
+        }
+        return User;
+    }());
+    exports.User = User;
 });
 
 define('resources/index',["require", "exports"], function (require, exports) {
@@ -66,12 +94,14 @@ define('resources/elements/header',["require", "exports", 'aurelia-framework'], 
         __decorate([
             aurelia_framework_1.bindable, 
             __metadata('design:type', Object)
-        ], Header.prototype, "value", void 0);
+        ], Header.prototype, "message", void 0);
         return Header;
     }());
     exports.Header = Header;
 });
 
-define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"bootstrap/css/bootstrap.min.css\"></require>\n  <require from=\"resources/elements/header\"></require>\n  <header></header>\n  <h1>${message}</h1>\n</template>\n"; });
-define('text!resources/elements/header.html', ['module'], function(module) { module.exports = "<template>\n  <nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n      <!-- Brand and toggle get grouped for better mobile display -->\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" href=\"#\">Brand</a>\n      </div>\n\n      <!-- Collect the nav links, forms, and other content for toggling -->\n      <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n        <ul class=\"nav navbar-nav\">\n          <li class=\"active\"><a href=\"#\">Link <span class=\"sr-only\">(current)</span></a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li class=\"dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Dropdown <span class=\"caret\"></span></a>\n            <ul class=\"dropdown-menu\">\n              <li><a href=\"#\">Action</a></li>\n              <li><a href=\"#\">Another action</a></li>\n              <li><a href=\"#\">Something else here</a></li>\n              <li role=\"separator\" class=\"divider\"></li>\n              <li><a href=\"#\">Separated link</a></li>\n              <li role=\"separator\" class=\"divider\"></li>\n              <li><a href=\"#\">One more separated link</a></li>\n            </ul>\n          </li>\n        </ul>\n        <form class=\"navbar-form navbar-left\">\n          <div class=\"form-group\">\n            <input type=\"text\" class=\"form-control\" placeholder=\"Search\">\n          </div>\n          <button type=\"submit\" class=\"btn btn-default\">Submit</button>\n        </form>\n        <ul class=\"nav navbar-nav navbar-right\">\n          <li><a href=\"#\">Link</a></li>\n          <li class=\"dropdown\">\n            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Dropdown <span class=\"caret\"></span></a>\n            <ul class=\"dropdown-menu\">\n              <li><a href=\"#\">Action</a></li>\n              <li><a href=\"#\">Another action</a></li>\n              <li><a href=\"#\">Something else here</a></li>\n              <li role=\"separator\" class=\"divider\"></li>\n              <li><a href=\"#\">Separated link</a></li>\n            </ul>\n          </li>\n        </ul>\n      </div><!-- /.navbar-collapse -->\n    </div><!-- /.container-fluid -->\n  </nav>\n</template>\n"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"bootstrap/css/bootstrap.min.css\"></require>\n  <require from=\"resources/elements/header\"></require>\n\n  <header message.bind=\"message\" router.bind=\"router\"></header>\n  <router-view class=\"col-md-8\"></router-view>\n\n</template>\n"; });
+define('text!home.html', ['module'], function(module) { module.exports = "<template>\n  <h1>Home</h1>\n</template>\n"; });
+define('text!user.html', ['module'], function(module) { module.exports = "<template>\n  <h1>User Settings</h1>\n\n  <form>\n    <div class=\"form-group\">\n      <label for=\"inputUserName\">Email address</label>\n      <input type=\"text\" class=\"form-control\" id=\"inputUserName\" placeholder=\"Your Name\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"exampleInputPassword1\">Password</label>\n      <input type=\"password\" class=\"form-control\" id=\"exampleInputPassword1\" placeholder=\"Password\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-default\">Submit</button>\n  </form>\n</template>\n"; });
+define('text!resources/elements/header.html', ['module'], function(module) { module.exports = "<template bindable=\"message\">\n  <nav class=\"navbar navbar-default navbar-fixed-top\">\n    <div class=\"container-fluid\">\n      <!-- Brand and toggle get grouped for better mobile display -->\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" route-href=\"route: home\"> ${message} </a>\n      </div>\n\n      <!-- Collect the nav links, forms, and other content for toggling -->\n      <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n        <ul class=\"nav navbar-nav\">\n          <li><a route-href=\"route: home\">Home</a></li>\n          <li><a route-href=\"route: user\">User</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n  <p>&nbsp;</p>\n  <p>&nbsp;</p>\n</template>\n"; });
 //# sourceMappingURL=app-bundle.js.map

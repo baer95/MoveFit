@@ -1,7 +1,7 @@
 import {bindable} from 'aurelia-framework';
 
 export class Header {
-  @bindable value;
+  @bindable message;
 
   valueChanged(newValue, oldValue) {
 
