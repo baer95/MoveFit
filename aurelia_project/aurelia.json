@@ -93,6 +93,7 @@
           "scripts/require.js"
         ],
         "dependencies": [
+          "jquery",
           "aurelia-binding",
           "aurelia-bootstrapper",
           "aurelia-dependency-injection",
@@ -115,7 +116,6 @@
           "aurelia-templating",
           "aurelia-templating-binding",
           "aurelia-fetch-client",
-          "jquery",
           {
             "name" : "bootstrap",
             "path" : "../node_modules/bootstrap/dist",

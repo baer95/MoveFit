@@ -6,12 +6,13 @@ import {UserDataService} from "services/UserDataService";
 
 @inject(UserDataService)
 export class App {
+  userDataService;
   message = "MoveFit";
   router: Router;
 
 
   constructor(userDataService){
-
+    this.userDataService = userDataService;
     // this.timeoutLog();
   }
 
@@ -30,6 +31,5 @@ export class App {
 
     this.router = router;
   }
-
 
 }
