@@ -4,6 +4,16 @@ export class App {
   message = "MoveFit";
   router: Router;
 
+  constructor(){
+    // this.timeoutLog();
+  }
+
+  // private timeoutLog(){
+  //   setInterval(() => {
+  //     console.log("Home is running");
+  //   }, 1000);
+  // }
+
   configureRouter(config: RouterConfiguration, router: Router): void {
     config.title = 'MoveFit';
     config.map([
