@@ -1,16 +1,18 @@
 import {Router, RouterConfiguration} from "aurelia-router";
 import {inject} from "aurelia-framework";
 import {UserDataService} from "services/UserDataService";
+import {AppDataService} from "services/AppDataService";
 import {EventAggregator} from "aurelia-event-aggregator"
 import {TimerService} from "./services/TimerService";
 import {LocationService} from "./services/LocationService";
 
-@inject(UserDataService, EventAggregator, TimerService, LocationService)
+@inject(UserDataService, AppDataService, EventAggregator, TimerService, LocationService)
 export class App {
     message = "MoveFit";
     router: Router;
 
     userDataService;
+    appDataService;
     eventAggregator:EventAggregator;
     timerService;
     locationService;
@@ -26,8 +28,9 @@ export class App {
      * @param timerService
      * @param locationService
      */
-    constructor(userDataService, eventAggregator, timerService, locationService) {
+    constructor(userDataService, appDataService, eventAggregator, timerService, locationService) {
         this.userDataService = userDataService;
+        this.appDataService = appDataService;
         this.eventAggregator = eventAggregator;
         this.timerService = timerService;
         this.locationService = locationService;
@@ -40,7 +43,8 @@ export class App {
         config.title = 'MoveFit';
         config.map([
             { route: '', name: 'home', moduleId: 'home'},
-            { route: 'user', name: 'user', moduleId: 'user'}
+            { route: 'user', name: 'user', moduleId: 'user'},
+            { route: 'settings', name: 'settings', moduleId: 'settings'}
         ]);
 
         this.router = router;

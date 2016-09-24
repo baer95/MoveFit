@@ -1,0 +1,15 @@
+<template>
+  <h3>Settings</h3>
+  <p class="lead">
+    Select if you want to be notified, if you were inactive for too long
+  </p>
+
+  <form>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" checked.bind="notifsEnabled"> Enable Notifcations
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block" click.trigger="saveData()">Save data</button>
+  </form>
+</template>

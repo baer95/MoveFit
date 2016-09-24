@@ -1,7 +1,3 @@
-/*
-* should read from the userData json file and provide the info throughout the app
-* */
-
 export class UserDataService{
   username:string;
   profession:string;
