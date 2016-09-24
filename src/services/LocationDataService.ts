@@ -10,4 +10,12 @@ export class LocationDataService{
   setLat(lat){
 
   }
+
+
+
+  // Precious.plugins.getStorageEntry(callback, key, userInfo)
+  // Precious.plugins.setStorageEntry(callback, key, value, userInfo)
+  // Precious.plugins.removeStorageEntry(callback, key, userInfo)
+
+
 }
