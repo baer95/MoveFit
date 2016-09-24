@@ -5,18 +5,25 @@ import {EventAggregator} from 'aurelia-event-aggregator';
 
 export class TimerService {
 
-    /////////////////////
-    ///   VARIABLES   ///
-    /////////////////////
+    ///////////////////////
+    ///   CONFIG-VARS   ///
+    ///////////////////////
+
+    // Zeit bis zur Benachrichtigung [s]
+    threshold = 60 * 30; // 30 Minuten
+
+    // Timer-Intervall [ms]
+    interval = 1000;
+
+    ////////////////////
+    ///   APP-VARS   ///
+    ////////////////////
 
     // EventAggregator Object
     eventAggregator:EventAggregator;
 
     // Zeit im Stillstand
     totalSeconds = 0;
-
-    // Zeit bis zur Benachrichtigung
-    threshold = 60 * 30;
 
     // Intervall-ID des Timers
     timer = null;
@@ -25,21 +32,30 @@ export class TimerService {
     ///   METHODS   ///
     ///////////////////
 
+    /**
+     * constructor
+     *
+     * @param eventAggregator
+     */
     constructor(eventAggregator) {
-
         this.eventAggregator = eventAggregator;
-
     }
 
-    // START TIMER
+    /**
+     * start timer
+     *
+     * @param threshold
+     */
     start(threshold) {
         this.threshold = threshold;
         if (!this.timer) {
-            this.timer = setInterval(this.setTime, 1000);
+            this.timer = setInterval(this.setTime(), this.interval);
         }
     }
 
-    // STOP TIMER
+    /**
+     * stop timer
+     */
     stop() {
         if (this.timer) {
             clearInterval(this.timer);
@@ -47,7 +63,9 @@ export class TimerService {
         }
     }
 
-    // RESET TIMER
+    /**
+     * reset timer
+     */
     reset() {
         if (this.timer) {
             this.totalSeconds = 0;

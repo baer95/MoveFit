@@ -5,37 +5,65 @@ import {EventAggregator} from 'aurelia-event-aggregator';
 
 export class LocationService {
 
-    /////////////////////
-    ///   VARIABLES   ///
-    /////////////////////
+    ///////////////////////
+    ///   CONFIG-VARS   ///
+    ///////////////////////
 
-    //
+    /**
+     * threshold [m]
+     *
+     * radius of change that is ignored and counted as standstill
+     */
+    threshold = 5;
+
+    ////////////////////
+    ///   APP-VARS   ///
+    ////////////////////
+
+    /**
+     * eventAggregator
+     */
     eventAggregator:EventAggregator;
 
-    // GPS-API-Request-ID
-    // wird von app.ts verwendet
+    /**
+     * GPS-API-Request-ID
+     *
+     * wird von app.ts verwendet
+     */
     gpsRequestId;
 
-    // Location History Array
-    // {
-    //  "lat": float ,
-    //  "long": float,
-    //  "active": bool,
-    //  "timestamp": int
-    // }
+    /**
+     * Location History Array
+     *
+     * @type {Array}
+     *
+     * {
+     *  "lat": float ,
+     *  "long": float,
+     *  "active": bool,
+     *  "timestamp": int
+     * }
+     */
     locationHistory = [];
 
     ///////////////////
     ///   METHODS   ///
     ///////////////////
 
+    /**
+     * constructor
+     *
+     * @param eventAggregator
+     */
     constructor(eventAggregator) {
-
         this.eventAggregator = eventAggregator;
-
     }
 
-    // spherical distance between two coordinates in meters
+    /**
+     * spherical distance
+     *
+     * calculate the spherical distance between two coordinates in meters
+     */
     static sphericalDistance(lat1, lon1, lat2, lon2) {
         var p = 0.017453292519943295;    // Math.PI / 180
         var c = Math.cos;
@@ -64,7 +92,7 @@ export class LocationService {
         var locationObject = {
             "lat":r.latitude,
             "lon":r.longitude,
-            "active": (distance >= 3 ? true : false),
+            "active": (distance >= this.threshold ? true : false),
             "timestamp":Date.now()
         };
         this.locationHistory.unshift([locationObject]);
