@@ -76,11 +76,15 @@ export class TimerService {
      */
     getRemainingTime() {
 
-        let minutes = Math.floor((this.threshold-this.totalSeconds)/60);
-        let seconds = (this.threshold-this.totalSeconds) % 60;
+        // let minutes = Math.floor((this.threshold-this.totalSeconds)/60);
+        // let seconds = (this.threshold-this.totalSeconds) % 60;
+        // return minutes + ":" + seconds;
 
-        return minutes + ":" + seconds;
+        // return new Date(this.threshold-this.totalSeconds);
 
+        var date = new Date(null);
+        date.setSeconds(this.threshold-this.totalSeconds);
+        return date.toISOString().substr(11, 8);
     }
 
 }
