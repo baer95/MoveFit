@@ -1,27 +1,41 @@
-
 import {Router, RouterConfiguration} from "aurelia-router";
 import {inject} from "aurelia-framework";
 import {UserDataService} from "services/UserDataService";
+import {EventAggregator} from "aurelia-event-aggregator"
+import {TimerService} from "./services/TimerService";
+import {LocationService} from "./services/LocationService";
 
-
-@inject(UserDataService)
+@inject(UserDataService, EventAggregator, TimerService, LocationService)
 export class App {
-    userDataService;
     message = "MoveFit";
     router: Router;
 
+    userDataService;
+    eventAggregator;
+    timerService;
+    locationService;
 
-    constructor(userDataService){
+    activitySubscriber;
+    timerSubscriber;
+
+    /**
+     * Constructor
+     *
+     * @param userDataService
+     * @param eventAggregator
+     * @param timerService
+     * @param locationService
+     */
+    constructor(userDataService, eventAggregator, timerService, locationService) {
         this.userDataService = userDataService;
-        // this.timeoutLog();
+        this.eventAggregator = eventAggregator;
+        this.timerService = timerService;
+        this.locationService = locationService;
     }
 
-    // private timeoutLog(){
-    //   setInterval(() => {
-    //     console.log("Home is running");
-    //   }, 1000);
-    // }
-
+    /**
+     * Configure Router
+     */
     configureRouter(config: RouterConfiguration, router: Router): void {
         config.title = 'MoveFit';
         config.map([
@@ -32,15 +46,17 @@ export class App {
         this.router = router;
     }
 
-    // enable Notifications
+    /**
+     * enable Notifications
+     */
     enable(threshold = 60 * 30) {
-        this.threshold = threshold;
+        this.timerService.threshold = threshold;
 
         // enable GPS-Updates
-        this.gpsRequestId = Precious.plugins.getContinuousGPS(this.movementDetector);
+        this.locationService.gpsRequestId = Precious.plugins.getContinuousGPS(this.locationService.movementDetector());
 
         // subscribe to activityChannel
-        this.subscriber = this.ea.subscribe('activityChannel', active => {
+        this.activitySubscriber = this.eventAggregator.subscribe('activityChannel', active => {
 
             if (active) {
 
@@ -55,16 +71,33 @@ export class App {
 
         });
 
+        // subscribe to timerChannel
+        this.timerSubscriber = this.eventAggregator.subscribe("timerChannel", status => {
+
+            switch (status) {
+                case "timeout":
+                    Precious.plugins.setNotification(false, "Move it, Fucker!", "Deine Position hat sich seit 30 Minuten nicht verändert. Zeit für eine Pause!");
+                    break;
+                default:
+            }
+
+        });
+
     }
 
-    // disable Notifications
+    /**
+     * disable Notifications
+     */
     disable() {
 
         // disable GPS-Updates
-        Precious.removeRequest(this.gpsRequestId);
+        Precious.removeRequest(this.locationService.gpsRequestId);
 
         // unsubscribe from activityChannel
-        this.subscriber.dispose();
+        this.activitySubscriber.dispose();
+
+        // unsubscribe form timerChannel
+        this.timerSubscriber.dispose();
 
     }
 
