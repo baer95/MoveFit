@@ -3,15 +3,17 @@
 
   <p>
     <br>
+      <div if.bind="showNoGpsError" class="panel panel-danger">
+        <div class="panel-body">
+          <h2>No GPS Signal available!</h2>
+        </div>
+      </div>
     <br>
   </p>
 
   <div class="panel panel-danger">
     <div class="panel-heading">
       Time until next break
-    </div>
-    <div if.bind="showNoGpsError" class="panel-body">
-      <h2>No GPS Signal available!</h2>
     </div>
     <div if.bind="!showNoGpsError" class="panel-body">
       <h2 >${timerService.remainingTime}</h2>
