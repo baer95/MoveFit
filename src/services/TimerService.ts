@@ -29,7 +29,9 @@ export class TimerService {
     timer = null;
 
     // remaining time
-    remainingTime = "0";
+    remainingTime = 0;
+
+    timeString = "";
 
     ///////////////////
     ///   METHODS   ///
@@ -94,7 +96,7 @@ export class TimerService {
 
         this.setRemainingTime();
 
-        if ((this.threshold-this.totalSeconds) <= 0) { // ZEIT ABGELAUFEN
+        if ((this.remainingTime <= 0) { // ZEIT ABGELAUFEN
             this.eventAggregator.publish("timerChannel", "timeout");
         }
     }
@@ -106,9 +108,11 @@ export class TimerService {
      */
     setRemainingTime() {
 
+        this.remainingTime = this.threshold-this.totalSeconds;
+
         var date = new Date(null);
         date.setSeconds(this.threshold-this.totalSeconds);
-        this.remainingTime = date.toISOString().substr(11, 8);
+        this.timeString = date.toISOString().substr(11, 8);
     }
 
 }

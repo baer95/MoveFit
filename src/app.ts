@@ -35,7 +35,7 @@ export class App {
         this.timerService = timerService;
         this.locationService = locationService;
 
-        this.enableNotifications(1); // 1 Minute bis zur Notification
+        this.enableNotifications(60); // 60 Sekunden bis zur Notification
     }
 
     /**
