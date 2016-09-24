@@ -11,11 +11,6 @@ export class User {
   profession;
   workhours;
   customTimeout;
-  // workhours = [
-  //   "0800",
-  //   "1600"
-  // ];
-  // customTimeout = 10;
   professions =  [
     {
       "name": "TechSupport"
