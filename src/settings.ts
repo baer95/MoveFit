@@ -5,21 +5,21 @@ import {AppDataService} from "./services/AppDataService";
 export class Settings{
   appDataService;
 
-  notifsEnabled;
+  enableNotifications;
 
   constructor(appDataService){
     this.appDataService = appDataService;
 
-    this.notifsEnabled = appDataService.getNotifsEnabled();
+    this.enableNotifications = appDataService.getNotifsEnabled();
 
-    console.log(this.notifsEnabled);
+    console.log(this.enableNotifications);
   }
 
   private saveData(){
-    console.log("save Data", this.notifsEnabled);
+    console.log("save Data", this.enableNotifications);
     let settings = {
       "settings":{
-        "enableNotifications": this.notifsEnabled
+        "enableNotifications": this.enableNotifications
       }
     };
     this.appDataService.saveAppSettings(settings);
