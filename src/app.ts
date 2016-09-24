@@ -11,7 +11,7 @@ export class App {
     router: Router;
 
     userDataService;
-    eventAggregator;
+    eventAggregator:EventAggregator;
     timerService;
     locationService;
 
@@ -60,12 +60,12 @@ export class App {
 
             if (active) {
 
-                this.Timer.stop();
-                this.Timer.reset();
+                this.timerService.stop();
+                this.timerService.reset();
 
             } else {
 
-                this.Timer.start(this.threshold);
+                this.timerService.start(this.timerService.threshold);
 
             }
 
