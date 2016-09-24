@@ -29,7 +29,7 @@ export class TimerService {
     timer = null;
 
     // remaining time
-    remainingTime;
+    remainingTime = "0";
 
     ///////////////////
     ///   METHODS   ///
@@ -55,7 +55,9 @@ export class TimerService {
 
         this.threshold = threshold;
         if (!this.timer) {
-            this.timer = setInterval(this.setTime(), this.interval);
+            this.timer = setInterval(()=>{
+                this.setTime();
+            }, this.interval);
         }
     }
 
@@ -116,6 +118,8 @@ export class TimerService {
         // return minutes + ":" + seconds;
 
         // return new Date(this.threshold-this.totalSeconds);
+
+        console.log("timer.setRemainingTime");
 
         var date = new Date(null);
         date.setSeconds(this.threshold-this.totalSeconds);

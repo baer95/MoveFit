@@ -61,7 +61,9 @@ export class App {
         console.log(this.timerService.threshold);
 
         // enable GPS-Updates
-        this.locationService.gpsRequestId = Precious.plugins.getContinuousGPS(this.locationService.movementDetector);
+        this.locationService.gpsRequestId = Precious.plugins.getContinuousGPS((e,r)=> {
+            this.locationService.movementDetector(e,r);
+        });
 
         console.log(this.locationService.gpsRequestId);
 

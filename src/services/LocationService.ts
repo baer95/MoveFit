@@ -35,7 +35,10 @@ export class LocationService {
     // new location history
     old_lat = 10;
     old_lon = 20;
+
     old_active = false;
+
+    distance = 0;
 
     ///////////////////
     ///   METHODS   ///
@@ -56,35 +59,44 @@ export class LocationService {
      *
      * calculate the spherical distance between two coordinates in meters
      */
-    private sphericalDistance(lat1, lon1, lat2, lon2) {
-        return 4;
-        var p = 0.017453292519943295;    // Math.PI / 180
-        var c = Math.cos;
-        var a = 0.5 - c((lat2 - lat1) * p)/2 +
-            c(lat1 * p) * c(lat2 * p) *
-            (1 - c((lon2 - lon1) * p))/2;
-        return 12742000 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km * 1000 für Meter
+    sphericalDistance(lat1, lon1, lat2, lon2)
+    {
+        var R = 6371; // km
+        var dLat = this.toRad(lat2-lat1);
+        var dLon = this.toRad(lon2-lon1);
+        var lat1 = this.toRad(lat1);
+        var lat2 = this.toRad(lat2);
+
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        return d;
+    }
+    // Converts numeric degrees to radians
+    toRad(Value)
+    {
+        return Value * Math.PI / 180;
     }
 
     /**
      * movementDetector
      */
-    private movementDetector(e, r)
+    movementDetector(e, r)
     {
         console.log("MovementDetector executing");
 
-        console.log("e:", e);
-        console.log("r:", r);
-
-        console.log("lat_new:"+r.latitude);
-        console.log("lon_new:"+r.longitude);
-
         // Distanz zur letzten Location berechnen
-        var distance = this.sphericalDistance(this.old_lat, this.old_lon, r.latitude, r.longitude);
+        this.distance = this.sphericalDistance(this.old_lat, this.old_lon, r.latitude, r.longitude);
 
-        console.log("distance: " + distance);
+        // war user aktiv?
+        var new_active = this.distance >= this.threshold ? true : false;
 
-        var new_active = distance >= this.threshold ? true : false;
+        // neue werte speichern
+        this.old_lat = r.latitude;
+        this.old_lon = r.longitude;
+
+        console.log("distance: " + this.distance + "m");
 
         // bei Statusänderung Event auslösen
         if ( !this.old_active && new_active ) { // IDLE --> ACTIVE
@@ -100,5 +112,8 @@ export class LocationService {
             this.eventAggregator.publish("activityChannel", false);
 
         }
+
+        this.old_active = new_active;
+
     }
 }
