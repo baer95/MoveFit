@@ -29,7 +29,7 @@ export class TimerService {
     timer = null;
 
     // remaining time
-    remainingTime = 0;
+    remainingTime:number;
 
     timeString = "";
 
@@ -53,6 +53,7 @@ export class TimerService {
      */
     start(threshold) {
         this.threshold = threshold;
+        this.timeString = this.threshold.toString();
         if (!this.timer) {
             this.timer = setInterval(()=>{
                 this.setTime();
@@ -92,11 +93,12 @@ export class TimerService {
 
         this.totalSeconds++;
 
-        console.log(this.totalSeconds);
+        console.log("total:",this.totalSeconds);
+        console.log("remainning:",this.remainingTime);
 
         this.setRemainingTime();
 
-        if ((this.remainingTime <= 0) { // ZEIT ABGELAUFEN
+        if ((this.remainingTime == 0)) { // ZEIT ABGELAUFEN
             this.eventAggregator.publish("timerChannel", "timeout");
         }
     }
