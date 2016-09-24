@@ -32,11 +32,14 @@ export class LocationService {
      */
     gpsRequestId;
 
-    // new location history
+    // location history
     old_lat = 1;
     old_lon = 1;
     old_active = false;
     distance = 0;
+
+    // location history
+    locationHistory = [];
 
     ///////////////////
     ///   METHODS   ///
@@ -54,11 +57,13 @@ export class LocationService {
     /**
      * spherical distance
      *
-     * calculate the spherical distance between two coordinates in meters
+     * calculate the spherical distance between two coordinates
+     *
+     * @returns Sphärische distanz zwischen zwei Koordinaten [m]
      */
     sphericalDistance(lat1, lon1, lat2, lon2)
     {
-        var R = 6371; // km
+        var R = 6371 * 1000; // km * 1000 = m
         var dLat = this.deg2rad(lat2-lat1);
         var dLon = this.deg2rad(lon2-lon1);
         var lat1:any = this.deg2rad(lat1);
@@ -82,8 +87,8 @@ export class LocationService {
     movementDetector(e, r)
     {
         // zur Anzeige einer Fehlermeldung wenn kein GPS vorhanden ist
-        this.eventAggregator.publish("activityChannel", e);
-        if (e != null) return;
+        // this.eventAggregator.publish("activityChannel", e);
+        // if (e != null) return;
 
         // Distanz zur letzten Location berechnen
         this.distance = this.sphericalDistance(this.old_lat, this.old_lon, r.latitude, r.longitude);

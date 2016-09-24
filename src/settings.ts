@@ -19,7 +19,7 @@ export class Settings{
     console.log("save Data", this.notifsEnabled);
     let settings = {
       "settings":{
-        "notifsEnabled": this.notifsEnabled
+        "enableNotifications": this.notifsEnabled
       }
     };
     this.appDataService.saveAppSettings(settings);

@@ -7,7 +7,9 @@ import {TimerService} from "services/TimerService";
 import {LocationService} from "services/LocationService";
 
 @inject(UserDataService, AppDataService, EventAggregator, TimerService, LocationService)
+
 export class App {
+
     message = "MoveFit";
     router: Router;
 
@@ -20,10 +22,13 @@ export class App {
     activitySubscriber;
     timerSubscriber;
 
+    gpsAvailable = false;
+
     /**
      * Constructor
      *
      * @param userDataService
+     * @param appDataService
      * @param eventAggregator
      * @param timerService
      * @param locationService
@@ -56,43 +61,38 @@ export class App {
      * enable Notifications
      */
     enableNotifications(threshold = 60 * 30) {
+
+        // neuen threshold im timerService speichern
         this.timerService.threshold = threshold;
 
         // enable GPS-Updates
         this.locationService.gpsRequestId = Precious.plugins.getContinuousGPS((e,r)=> {
-            this.locationService.movementDetector(e,r);
+            if(e) {
+                this.gpsAvailable = false;
+            } else {
+                this.gpsAvailable = true;
+                this.locationService.movementDetector(e,r);
+            }
         });
 
         // subscribe to activityChannel
         this.activitySubscriber = this.eventAggregator.subscribe('activityChannel', active => {
-
             if (active) {
-
-                this.timerService.stop();
                 this.timerService.reset();
-
-                // console.log("timer stopped");
-
             } else {
-
-                this.timerService.start(this.timerService.threshold);
-                // console.log("timer started");
-
+                this.timerService.start();
             }
-
         });
 
         // subscribe to timerChannel
         this.timerSubscriber = this.eventAggregator.subscribe("timerChannel", status => {
-
             switch (status) {
                 case "timeout":
                     Precious.plugins.setNotification(null, "Move it, Fucker!", "Deine Position hat sich seit 30 Minuten nicht verändert. Zeit für eine Pause!");
-                    this.timerService.stop();
+                    this.timerService.reset();
                     break;
                 default:
             }
-
         });
 
     }

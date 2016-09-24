@@ -10,7 +10,15 @@ export class TimerService {
     ///////////////////////
 
     // Zeit bis zur Benachrichtigung [s]
-    threshold = 60 * 30; // 30 Minuten
+    private _threshold = 60 * 30; // 30 Minuten
+
+    get threshold(): number {
+        return this._threshold;
+    }
+
+    set threshold(value: number) {
+        this._threshold = value;
+    }
 
     // Timer-Intervall [ms]
     interval = 1000;
@@ -29,9 +37,7 @@ export class TimerService {
     timer = null;
 
     // remaining time
-    // remainingTime:number;
-
-    timeString = "";
+    remainingTime:number;
 
     ///////////////////
     ///   METHODS   ///
@@ -51,13 +57,10 @@ export class TimerService {
      *
      * @param threshold
      */
-    start(threshold) {
-        this.threshold = threshold;
-        this.timeString = this.threshold.toString();
+    start() {
         if (!this.timer) {
-            this.timer = setInterval(()=>{
-                this.setTime();
-            }, this.interval);
+            console.log("timerService.start");
+            this.timer = setInterval(() => {this.setTime()},this.interval);
         }
     }
 
@@ -65,10 +68,10 @@ export class TimerService {
      * stop timer
      */
     stop() {
-
-        console.log("timer.stop");
-
         if (this.timer) {
+
+            console.log("timerService.stop", this.timer);
+
             clearInterval(this.timer);
             this.timer = null;
         }
@@ -78,8 +81,10 @@ export class TimerService {
      * reset timer
      */
     reset() {
-
         if (this.timer) {
+
+            console.log("timerService.reset");
+
             this.totalSeconds = 0;
             this.stop();
         }
@@ -93,31 +98,19 @@ export class TimerService {
      */
     setTime() {
 
+        // increment totalSeconds
         this.totalSeconds++;
 
-        console.log("elapsed:",this.totalSeconds);
-        console.log("remainning:",this.remainingTime);
+        // calculate remaining Time
+        this.remainingTime = this.threshold-this.totalSeconds;
 
-        if (this.totalSeconds == this.threshold) { // ZEIT ABGELAUFEN
-            this.totalSeconds--;
+        // Timeout Check
+        if (this.remainingTime == 0) { // ZEIT ABGELAUFEN
             this.eventAggregator.publish("timerChannel", "timeout");
         }
 
-        this.setRemainingTime();
+        // LOGGING
+        console.log("timerService.totalSeconds:",this.totalSeconds);
+        console.log("timerService.remainningTime:",this.remainingTime);
     }
-
-    /**
-     * setRemainingTime
-     *
-     * Time until threshold is reached
-     */
-    setRemainingTime() {
-
-        // this.remainingTime = this.threshold-this.totalSeconds;
-
-        var date = new Date(null);
-        date.setSeconds(this.threshold-this.totalSeconds);
-        this.timeString = date.toISOString().substr(11, 8);
-    }
-
 }

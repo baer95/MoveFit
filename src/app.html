@@ -1,8 +1,13 @@
 <template>
-  <require from="bootstrap/css/bootstrap.min.css"></require>
-  <require from="resources/elements/header"></require>
 
-  <header message.bind="message" router.bind="router"></header>
-  <router-view class="col-md-8 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"></router-view>
+    <require from="bootstrap/css/bootstrap.min.css"></require>
+    <require from="resources/elements/header"></require>
+
+    <div class="alert alert-danger" role="alert" if.bind="!gpsAvailable">
+        <strong>Error!</strong> No GPS available
+    </div>
+
+    <header message.bind="message" router.bind="router"></header>
+    <router-view class="col-md-8 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"></router-view>
 
 </template>
