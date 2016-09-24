@@ -32,19 +32,10 @@ export class LocationService {
      */
     gpsRequestId;
 
-    /**
-     * Location History Array
-     *
-     * @type {Array}
-     *
-     * {
-     *  "lat": float ,
-     *  "long": float,
-     *  "active": bool,
-     *  "timestamp": int
-     * }
-     */
-    locationHistory = [];
+    // new location history
+    old_lat = 10;
+    old_lon = 20;
+    old_active = false;
 
     ///////////////////
     ///   METHODS   ///
@@ -56,6 +47,7 @@ export class LocationService {
      * @param eventAggregator
      */
     constructor(eventAggregator) {
+        console.log("creating new LocationService");
         this.eventAggregator = eventAggregator;
     }
 
@@ -64,7 +56,8 @@ export class LocationService {
      *
      * calculate the spherical distance between two coordinates in meters
      */
-    static sphericalDistance(lat1, lon1, lat2, lon2) {
+    private sphericalDistance(lat1, lon1, lat2, lon2) {
+        return 4;
         var p = 0.017453292519943295;    // Math.PI / 180
         var c = Math.cos;
         var a = 0.5 - c((lat2 - lat1) * p)/2 +
@@ -75,54 +68,37 @@ export class LocationService {
 
     /**
      * movementDetector
-     *
-     * @param e Event Object
-     * @param r Response Object
-     *
-     * berechnet Distanz zur letzten Position
-     * speichert aktuelle Position
-     * löst bei Statusänderung Event aus
      */
-    movementDetector(e, r)
+    private movementDetector(e, r)
     {
-        console.log("MovementDetector");
+        console.log("MovementDetector executing");
 
-        console.log(e);
-        console.log(r);
+        console.log("e:", e);
+        console.log("r:", r);
+
+        console.log("lat_new:"+r.latitude);
+        console.log("lon_new:"+r.longitude);
 
         // Distanz zur letzten Location berechnen
-        var distance = this.sphericalDistance(this.locationHistory[0]["lat"], this.locationHistory[0]["lon"], r.latitude, r.longitude);
+        var distance = this.sphericalDistance(this.old_lat, this.old_lon, r.latitude, r.longitude);
 
         console.log("distance: " + distance);
 
-        // Neue Position in Location History eintragen und ältesten Wert entfernen
-        var locationObject = {
-            "lat":r.latitude,
-            "lon":r.longitude,
-            "active": (distance >= this.threshold ? true : false),
-            "timestamp":Date.now()
-        };
-
-        console.log(locationObject);
-
-        this.locationHistory.unshift([locationObject]);
-        this.locationHistory.length = 10;
-
-        console.log(this.locationHistory);
+        var new_active = distance >= this.threshold ? true : false;
 
         // bei Statusänderung Event auslösen
-        if ( !this.locationHistory[1]["active"] && this.locationHistory[0]["active"] ) { // IDLE --> ACTIVE
+        if ( !this.old_active && new_active ) { // IDLE --> ACTIVE
 
             console.log("idle->active triggered");
 
             this.eventAggregator.publish("activityChannel", true);
 
-        } else if ( this.locationHistory[1]["active"] && !this.locationHistory[0]["active"] ) { // ACTIVE --> IDLE
+        } else if ( this.old_active && !new_active ) { // ACTIVE --> IDLE
 
             console.log("active->idle triggered");
 
             this.eventAggregator.publish("activityChannel", false);
 
         }
-    };
+    }
 }

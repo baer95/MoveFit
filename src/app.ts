@@ -3,8 +3,8 @@ import {inject} from "aurelia-framework";
 import {UserDataService} from "services/UserDataService";
 import {AppDataService} from "services/AppDataService";
 import {EventAggregator} from "aurelia-event-aggregator"
-import {TimerService} from "./services/TimerService";
-import {LocationService} from "./services/LocationService";
+import {TimerService} from "services/TimerService";
+import {LocationService} from "services/LocationService";
 
 @inject(UserDataService, AppDataService, EventAggregator, TimerService, LocationService)
 export class App {
@@ -35,12 +35,7 @@ export class App {
         this.timerService = timerService;
         this.locationService = locationService;
 
-        if (true) {
-            this.enableNotifications();
-        } else {
-            this.disableNotifications();
-        }
-
+        this.enableNotifications();
     }
 
     /**
@@ -66,7 +61,7 @@ export class App {
         console.log(this.timerService.threshold);
 
         // enable GPS-Updates
-        this.locationService.gpsRequestId = Precious.plugins.getContinuousGPS(this.locationService.movementDetector());
+        this.locationService.gpsRequestId = Precious.plugins.getContinuousGPS(this.locationService.movementDetector);
 
         console.log(this.locationService.gpsRequestId);
 
