@@ -35,7 +35,7 @@ export class App {
         this.timerService = timerService;
         this.locationService = locationService;
 
-        this.enableNotifications();
+        this.enableNotifications(1); // 1 Minute bis zur Notification
     }
 
     /**
@@ -58,14 +58,10 @@ export class App {
     enableNotifications(threshold = 60 * 30) {
         this.timerService.threshold = threshold;
 
-        console.log(this.timerService.threshold);
-
         // enable GPS-Updates
         this.locationService.gpsRequestId = Precious.plugins.getContinuousGPS((e,r)=> {
             this.locationService.movementDetector(e,r);
         });
-
-        console.log(this.locationService.gpsRequestId);
 
         // subscribe to activityChannel
         this.activitySubscriber = this.eventAggregator.subscribe('activityChannel', active => {
@@ -75,12 +71,12 @@ export class App {
                 this.timerService.stop();
                 this.timerService.reset();
 
-                console.log("timer stopped");
+                // console.log("timer stopped");
 
             } else {
 
                 this.timerService.start(this.timerService.threshold);
-                console.log("timer started");
+                // console.log("timer started");
 
             }
 
@@ -92,14 +88,11 @@ export class App {
             switch (status) {
                 case "timeout":
                     Precious.plugins.setNotification(false, "Move it, Fucker!", "Deine Position hat sich seit 30 Minuten nicht verändert. Zeit für eine Pause!");
-                    console.log("timeout");
                     break;
                 default:
             }
 
         });
-
-        console.log("notifications enabled");
 
     }
 
@@ -116,8 +109,6 @@ export class App {
 
         // unsubscribe form timerChannel
         this.timerSubscriber.dispose();
-
-        console.log("notifications disabled");
 
     }
 

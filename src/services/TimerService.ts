@@ -10,7 +10,7 @@ export class TimerService {
     ///////////////////////
 
     // Zeit bis zur Benachrichtigung [s]
-    threshold = 60 * 10; // 10 Minuten
+    threshold = 60 * 30; // 30 Minuten
 
     // Timer-Intervall [ms]
     interval = 1000;
@@ -50,9 +50,6 @@ export class TimerService {
      * @param threshold
      */
     start(threshold) {
-
-        console.log("timer.start");
-
         this.threshold = threshold;
         if (!this.timer) {
             this.timer = setInterval(()=>{
@@ -66,8 +63,6 @@ export class TimerService {
      */
     stop() {
 
-        console.log("timer.stop");
-
         if (this.timer) {
             clearInterval(this.timer);
             this.timer = null;
@@ -78,8 +73,6 @@ export class TimerService {
      * reset timer
      */
     reset() {
-
-        console.log("timer.reset");
 
         if (this.timer) {
             this.totalSeconds = 0;
@@ -95,13 +88,11 @@ export class TimerService {
      */
     setTime() {
 
-        console.log("timer.setTime");
-
         this.totalSeconds++;
 
         this.setRemainingTime();
 
-        if (this.totalSeconds >= this.threshold) { // ZEIT ABGELAUFEN
+        if ((this.threshold-this.totalSeconds) <= 0) { // ZEIT ABGELAUFEN
             this.eventAggregator.publish("timerChannel", "timeout");
         }
     }
@@ -112,14 +103,6 @@ export class TimerService {
      * Time until threshold is reached
      */
     setRemainingTime() {
-
-        // let minutes = Math.floor((this.threshold-this.totalSeconds)/60);
-        // let seconds = (this.threshold-this.totalSeconds) % 60;
-        // return minutes + ":" + seconds;
-
-        // return new Date(this.threshold-this.totalSeconds);
-
-        console.log("timer.setRemainingTime");
 
         var date = new Date(null);
         date.setSeconds(this.threshold-this.totalSeconds);

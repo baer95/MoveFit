@@ -33,11 +33,9 @@ export class LocationService {
     gpsRequestId;
 
     // new location history
-    old_lat = 10;
-    old_lon = 20;
-
+    old_lat = 1;
+    old_lon = 1;
     old_active = false;
-
     distance = 0;
 
     ///////////////////
@@ -50,7 +48,6 @@ export class LocationService {
      * @param eventAggregator
      */
     constructor(eventAggregator) {
-        console.log("creating new LocationService");
         this.eventAggregator = eventAggregator;
     }
 
@@ -62,10 +59,10 @@ export class LocationService {
     sphericalDistance(lat1, lon1, lat2, lon2)
     {
         var R = 6371; // km
-        var dLat = this.toRad(lat2-lat1);
-        var dLon = this.toRad(lon2-lon1);
-        var lat1 = this.toRad(lat1);
-        var lat2 = this.toRad(lat2);
+        var dLat = this.deg2rad(lat2-lat1);
+        var dLon = this.deg2rad(lon2-lon1);
+        var lat1 = this.deg2rad(lat1);
+        var lat2 = this.deg2rad(lat2);
 
         var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
             Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
@@ -73,8 +70,8 @@ export class LocationService {
         var d = R * c;
         return d;
     }
-    // Converts numeric degrees to radians
-    toRad(Value)
+    // deg2rad
+    deg2rad(Value)
     {
         return Value * Math.PI / 180;
     }
@@ -84,10 +81,15 @@ export class LocationService {
      */
     movementDetector(e, r)
     {
-        console.log("MovementDetector executing");
+        if (e != null) { // Error - no GPS information
+            this.eventAggregator.publish("activityChannel", e);
+            return;
+        }
 
         // Distanz zur letzten Location berechnen
         this.distance = this.sphericalDistance(this.old_lat, this.old_lon, r.latitude, r.longitude);
+
+        console.log("distance: " + this.distance);
 
         // war user aktiv?
         var new_active = this.distance >= this.threshold ? true : false;
@@ -96,18 +98,12 @@ export class LocationService {
         this.old_lat = r.latitude;
         this.old_lon = r.longitude;
 
-        console.log("distance: " + this.distance + "m");
-
         // bei Statusänderung Event auslösen
         if ( !this.old_active && new_active ) { // IDLE --> ACTIVE
-
-            console.log("idle->active triggered");
 
             this.eventAggregator.publish("activityChannel", true);
 
         } else if ( this.old_active && !new_active ) { // ACTIVE --> IDLE
-
-            console.log("active->idle triggered");
 
             this.eventAggregator.publish("activityChannel", false);
 
