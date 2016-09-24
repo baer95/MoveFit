@@ -11,16 +11,24 @@ export class Home {
 
   activitySubscriber;
 
+  showNoGpsError = false;
+
   constructor(userDataService, timerService, eventAggregator){
 
     this.userDataService = userDataService;
     this.timerService = timerService;
     this.eventAggregator = eventAggregator;
+
+    this.subscribeToNoGps();
   }
 
   private subscribeToNoGps(){
-    this.activitySubscriber = this.eventAggregator.subscribe("activityChannel", nogps => {
-      console.log(nogps);
+    this.activitySubscriber = this.eventAggregator.subscribe("activityChannel", (nogps) => {
+      if(nogps != null  && nogps.errorCode == 1){
+        this.showNoGpsError = true;
+      } else {
+        this.showNoGpsError = false;
+      }
     });
   }
 }
