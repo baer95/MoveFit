@@ -34,6 +34,13 @@ export class App {
         this.eventAggregator = eventAggregator;
         this.timerService = timerService;
         this.locationService = locationService;
+
+        if (true) {
+            this.enableNotifications();
+        } else {
+            this.disableNotifications();
+        }
+
     }
 
     /**
@@ -53,11 +60,15 @@ export class App {
     /**
      * enable Notifications
      */
-    enable(threshold = 60 * 30) {
+    enableNotifications(threshold = 60 * 30) {
         this.timerService.threshold = threshold;
+
+        console.log(this.timerService.threshold);
 
         // enable GPS-Updates
         this.locationService.gpsRequestId = Precious.plugins.getContinuousGPS(this.locationService.movementDetector());
+
+        console.log(this.locationService.gpsRequestId);
 
         // subscribe to activityChannel
         this.activitySubscriber = this.eventAggregator.subscribe('activityChannel', active => {
@@ -67,9 +78,12 @@ export class App {
                 this.timerService.stop();
                 this.timerService.reset();
 
+                console.log("timer stopped");
+
             } else {
 
                 this.timerService.start(this.timerService.threshold);
+                console.log("timer started");
 
             }
 
@@ -81,18 +95,21 @@ export class App {
             switch (status) {
                 case "timeout":
                     Precious.plugins.setNotification(false, "Move it, Fucker!", "Deine Position hat sich seit 30 Minuten nicht verändert. Zeit für eine Pause!");
+                    console.log("timeout");
                     break;
                 default:
             }
 
         });
 
+        console.log("notifications enabled");
+
     }
 
     /**
      * disable Notifications
      */
-    disable() {
+    disableNotifications() {
 
         // disable GPS-Updates
         Precious.removeRequest(this.locationService.gpsRequestId);
@@ -102,6 +119,8 @@ export class App {
 
         // unsubscribe form timerChannel
         this.timerSubscriber.dispose();
+
+        console.log("notifications disabled");
 
     }
 

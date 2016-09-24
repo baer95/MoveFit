@@ -83,10 +83,17 @@ export class LocationService {
      * speichert aktuelle Position
      * löst bei Statusänderung Event aus
      */
-    movementDetector = function (e, r)
+    movementDetector(e, r)
     {
+        console.log("MovementDetector");
+
+        console.log(e);
+        console.log(r);
+
         // Distanz zur letzten Location berechnen
         var distance = this.sphericalDistance(this.locationHistory[0]["lat"], this.locationHistory[0]["lon"], r.latitude, r.longitude);
+
+        console.log("distance: " + distance);
 
         // Neue Position in Location History eintragen und ältesten Wert entfernen
         var locationObject = {
@@ -95,15 +102,24 @@ export class LocationService {
             "active": (distance >= this.threshold ? true : false),
             "timestamp":Date.now()
         };
+
+        console.log(locationObject);
+
         this.locationHistory.unshift([locationObject]);
         this.locationHistory.length = 10;
+
+        console.log(this.locationHistory);
 
         // bei Statusänderung Event auslösen
         if ( !this.locationHistory[1]["active"] && this.locationHistory[0]["active"] ) { // IDLE --> ACTIVE
 
+            console.log("idle->active triggered");
+
             this.eventAggregator.publish("activityChannel", true);
 
         } else if ( this.locationHistory[1]["active"] && !this.locationHistory[0]["active"] ) { // ACTIVE --> IDLE
+
+            console.log("active->idle triggered");
 
             this.eventAggregator.publish("activityChannel", false);
 

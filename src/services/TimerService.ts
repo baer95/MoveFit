@@ -10,7 +10,7 @@ export class TimerService {
     ///////////////////////
 
     // Zeit bis zur Benachrichtigung [s]
-    threshold = 60 * 30; // 30 Minuten
+    threshold = 60 * 10; // 10 Minuten
 
     // Timer-Intervall [ms]
     interval = 1000;
@@ -27,6 +27,9 @@ export class TimerService {
 
     // Intervall-ID des Timers
     timer = null;
+
+    // remaining time
+    remainingTime;
 
     ///////////////////
     ///   METHODS   ///
@@ -47,6 +50,9 @@ export class TimerService {
      * @param threshold
      */
     start(threshold) {
+
+        console.log("timer.start");
+
         this.threshold = threshold;
         if (!this.timer) {
             this.timer = setInterval(this.setTime(), this.interval);
@@ -57,6 +63,9 @@ export class TimerService {
      * stop timer
      */
     stop() {
+
+        console.log("timer.stop");
+
         if (this.timer) {
             clearInterval(this.timer);
             this.timer = null;
@@ -67,6 +76,9 @@ export class TimerService {
      * reset timer
      */
     reset() {
+
+        console.log("timer.reset");
+
         if (this.timer) {
             this.totalSeconds = 0;
             this.stop();
@@ -80,19 +92,24 @@ export class TimerService {
      * triggers Notification if threshold is reached
      */
     setTime() {
+
+        console.log("timer.setTime");
+
         this.totalSeconds++;
+
+        this.setRemainingTime();
+
         if (this.totalSeconds >= this.threshold) { // ZEIT ABGELAUFEN
             this.eventAggregator.publish("timerChannel", "timeout");
-
         }
     }
 
     /**
-     * getRemainingTime
+     * setRemainingTime
      *
      * Time until threshold is reached
      */
-    getRemainingTime() {
+    setRemainingTime() {
 
         // let minutes = Math.floor((this.threshold-this.totalSeconds)/60);
         // let seconds = (this.threshold-this.totalSeconds) % 60;
@@ -102,7 +119,7 @@ export class TimerService {
 
         var date = new Date(null);
         date.setSeconds(this.threshold-this.totalSeconds);
-        return date.toISOString().substr(11, 8);
+        this.remainingTime = date.toISOString().substr(11, 8);
     }
 
 }
