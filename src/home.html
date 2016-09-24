@@ -1,3 +1,17 @@
 <template>
-  <h1>Home</h1>
+  <h3>Hello ${userDataService.getUsername()}</h3>
+
+  <p>
+    <br>
+    <br>
+  </p>
+
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      Time until next break
+    </div>
+    <div class="panel-body">
+      <h2>${timerService.getRemainingTime()}</h2>
+    </div>
+  </div>
 </template>
