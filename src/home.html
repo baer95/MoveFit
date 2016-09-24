@@ -10,8 +10,11 @@
     <div class="panel-heading">
       Time until next break
     </div>
-    <div class="panel-body">
-      <h2>${timerService.remainingTime}</h2>
+    <div if.bind="showNoGpsError" class="panel-body">
+      <h2>No GPS Signal available!</h2>
+    </div>
+    <div if.bind="!showNoGpsError" class="panel-body">
+      <h2 >${timerService.remainingTime}</h2>
     </div>
   </div>
 </template>
