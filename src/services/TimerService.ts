@@ -53,7 +53,7 @@ export class TimerService {
         this.threshold = threshold;
         if (!this.timer) {
             this.timer = setInterval(()=>{
-                this.setTime();
+                this.setTime;
             }, this.interval);
         }
     }

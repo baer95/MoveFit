@@ -61,8 +61,8 @@ export class LocationService {
         var R = 6371; // km
         var dLat = this.deg2rad(lat2-lat1);
         var dLon = this.deg2rad(lon2-lon1);
-        var lat1 = this.deg2rad(lat1);
-        var lat2 = this.deg2rad(lat2);
+        var lat1:any = this.deg2rad(lat1);
+        var lat2:any = this.deg2rad(lat2);
 
         var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
             Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
@@ -81,10 +81,9 @@ export class LocationService {
      */
     movementDetector(e, r)
     {
-        if (e != null) { // Error - no GPS information
-            this.eventAggregator.publish("activityChannel", e);
-            return;
-        }
+        // zur Anzeige einer Fehlermeldung wenn kein GPS vorhanden ist
+        this.eventAggregator.publish("activityChannel", e);
+        if (e != null) return;
 
         // Distanz zur letzten Location berechnen
         this.distance = this.sphericalDistance(this.old_lat, this.old_lon, r.latitude, r.longitude);
