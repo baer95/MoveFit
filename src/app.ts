@@ -87,7 +87,7 @@ export class App {
 
             switch (status) {
                 case "timeout":
-                    Precious.plugins.setNotification(false, "Move it, Fucker!", "Deine Position hat sich seit 30 Minuten nicht verändert. Zeit für eine Pause!");
+                    Precious.plugins.setNotification(null, "Move it, Fucker!", "Deine Position hat sich seit 30 Minuten nicht verändert. Zeit für eine Pause!");
                     break;
                 default:
             }
