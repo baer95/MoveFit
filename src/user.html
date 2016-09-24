@@ -9,7 +9,7 @@
     <div class="form-group">
       <label for="selectProfession">Select Profession</label>
       <select class="form-control" id="selectProfession" value.bind="profession">
-          <option repeat.for="profession of professions">${profession.name}</option>
+          <option repeat.for="profession of professions" model.bind="profession">${profession.name}</option>
       </select>
     </div>
 

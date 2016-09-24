@@ -1,6 +1,6 @@
 export class UserDataService{
   username:string;
-  profession:string;
+  profession:any;
   workhours: Array<number>;
   timeout: number;
 
@@ -29,8 +29,8 @@ export class UserDataService{
     return this.profession;
   }
 
-  setProfession(name){
-    this.profession = name;
+  setProfession(profession){
+    this.profession = profession;
   }
 
   getWorkhours(){
