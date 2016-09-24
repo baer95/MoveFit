@@ -13,13 +13,16 @@ export class User {
   customTimeout;
   professions =  [
     {
-      "name": "TechSupport"
+      "name": "TechSupport",
+      "weight": 1
     },
     {
-      "name": "Salesman"
+      "name": "Salesman",
+      "weight": 0.5
     },
     {
-      "name": "Construction Worker"
+      "name": "Construction Worker",
+      "weight": 0
     }
   ];
 
